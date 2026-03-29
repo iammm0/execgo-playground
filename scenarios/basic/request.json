@@ -1,0 +1,19 @@
+{
+  "request_id": "basic-001",
+  "execgo_endpoint": "http://localhost:8080",
+  "poll": {
+    "interval_ms": 1000,
+    "max_attempts": 30
+  },
+  "tasks": [
+    {
+      "id": "check-host",
+      "type": "shell",
+      "params": {
+        "command": "hostname"
+      },
+      "retry": 1,
+      "timeout": 5000
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "result_version": "v1",
+  "request_id": "hitl-001",
+  "summary": {
+    "final_status": "success",
+    "status_count": {
+      "pending": 0,
+      "running": 0,
+      "success": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "tasks": [
+    {
+      "id": "generate-plan",
+      "status": "success"
+    },
+    {
+      "id": "human-approval",
+      "status": "success"
+    },
+    {
+      "id": "execute-after-approval",
+      "status": "success"
+    }
+  ],
+  "repro": {
+    "execgo_endpoint": "http://localhost:8080"
+  }
+}

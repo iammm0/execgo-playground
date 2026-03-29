@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://execgo-playground/shared/spec/training-result.schema.json",
+  "title": "TrainingResult",
+  "type": "object",
+  "required": [
+    "result_version",
+    "request_id",
+    "summary",
+    "tasks",
+    "repro"
+  ],
+  "properties": {
+    "result_version": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "final_status",
+        "status_count"
+      ],
+      "properties": {
+        "final_status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "partial_failure",
+            "failed",
+            "timeout"
+          ]
+        },
+        "status_count": {
+          "type": "object",
+          "required": [
+            "pending",
+            "running",
+            "success",
+            "failed",
+            "skipped"
+          ],
+          "properties": {
+            "pending": { "type": "integer", "minimum": 0 },
+            "running": { "type": "integer", "minimum": 0 },
+            "success": { "type": "integer", "minimum": 0 },
+            "failed": { "type": "integer", "minimum": 0 },
+            "skipped": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "running",
+              "success",
+              "failed",
+              "skipped"
+            ]
+          },
+          "failure_reason": { "type": "string" },
+          "output_preview": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "repro": {
+      "type": "object",
+      "required": [
+        "execgo_endpoint",
+        "request_hash"
+      ],
+      "properties": {
+        "execgo_endpoint": { "type": "string" },
+        "request_hash": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
