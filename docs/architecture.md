@@ -20,6 +20,14 @@
 - `analyzeFailure`: 失败分类与建议动作
 - `finalizeReport`: 产出可复现报告
 
+## 启动前预检查节点
+
+在执行任一 Orchestrator 前，先运行 `scripts/check-execgo-version.ps1` 做上游版本预检查：
+
+- 若发现上游已更新，应优先评估新特性接入点
+- 该策略可降低编排层与执行内核长期偏移的风险
+- 版本基线记录在 `shared/execgo.version.lock.json`
+
 ## 统一状态键
 
 - `request`

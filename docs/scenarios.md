@@ -22,6 +22,7 @@
 
 ## 推荐执行顺序
 
-1. `basic`
-2. `retry_timeout`
-3. `hitl`
+1. 启动前先执行 `pwsh ./scripts/check-execgo-version.ps1`
+2. `basic`
+3. `retry_timeout`
+4. `hitl`

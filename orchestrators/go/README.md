@@ -11,9 +11,11 @@
 
 ## 运行说明
 
-1. 安装依赖（按需）：
+1. 启动前先检查 ExecGo 上游更新：
+   - `pwsh ../../scripts/check-execgo-version.ps1`
+2. 安装依赖（按需）：
    - `go get github.com/tmc/langgraphgo`
-2. 运行：
+3. 运行：
    - `go run ./cmd/orchestrator -request ../../scenarios/basic/request.json`
 
 ## 注意

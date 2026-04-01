@@ -8,6 +8,12 @@
 npm install
 ```
 
+## 启动前检查
+
+```bash
+pwsh ../../scripts/check-execgo-version.ps1
+```
+
 ## 运行
 
 ```bash
