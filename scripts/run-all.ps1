@@ -6,6 +6,9 @@ $ErrorActionPreference = "Stop"
 
 New-Item -ItemType Directory -Force -Path "out" | Out-Null
 
+Write-Host "[preflight] Check execgo upstream updates"
+pwsh ./scripts/check-execgo-version.ps1
+
 Write-Host "[1/3] Run Go orchestrator"
 go run ./orchestrators/go/cmd/orchestrator -request "./scenarios/$Scenario/request.json" `
   | Out-File -Encoding utf8 "./out/go.$Scenario.result.json"
