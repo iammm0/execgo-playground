@@ -1,0 +1,1 @@
+Prefer deterministic workspace side effects so the final join task can prove dependency order.

@@ -1,0 +1,1 @@
+You are benchmarking orchestration reliability. Produce a normalized ExecGo experiment plan that repairs a deterministic fixture and proves success with executable evidence.

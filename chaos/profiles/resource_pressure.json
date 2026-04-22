@@ -1,0 +1,17 @@
+{
+  "id": "resource_pressure",
+  "target_phase": "runtime",
+  "actions": [
+    {
+      "kind": "resource_pressure",
+      "params": {
+        "service": "runtime",
+        "cpus": "0.25",
+        "memory": "192m"
+      }
+    }
+  ],
+  "probability": 1.0,
+  "seed": 19,
+  "recovery_expectation": "should_recover"
+}

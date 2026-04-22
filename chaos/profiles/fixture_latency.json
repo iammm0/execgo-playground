@@ -1,0 +1,16 @@
+{
+  "id": "fixture_latency",
+  "target_phase": "runtime",
+  "actions": [
+    {
+      "kind": "fixture_mode",
+      "params": {
+        "latency_ms": 1200,
+        "fail_mode": "none"
+      }
+    }
+  ],
+  "probability": 1.0,
+  "seed": 17,
+  "recovery_expectation": "should_recover"
+}

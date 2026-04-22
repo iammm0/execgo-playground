@@ -7,15 +7,26 @@
 # Node
 node_modules/
 dist/
+.npm-cache/
 
 # Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
+.pytest_cache/
+*.egg-info/
+
+# Rust
+target/
 
 # IDE / OS
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Playground runtime state
+var/runs/
+var/workspace/
+var/execgo-data/

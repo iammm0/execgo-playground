@@ -1,0 +1,48 @@
+{
+  "id": "vuln_scan",
+  "description": "Scan a deterministic dependency manifest against advisory fixtures and summarize findings.",
+  "seed": 7,
+  "allowed_chaos": ["none", "fixture_latency", "runtime_restart"],
+  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_vuln_scan",
+  "input": {
+    "objective": "Produce normalized vulnerability findings from the fixture repo.",
+    "reference_plan": {
+      "plan_id": "vuln_scan-reference",
+      "scenario_id": "vuln_scan",
+      "framework": "langgraph",
+      "mode": "replay",
+      "stages": [
+        {
+          "stage_id": "scan-dependencies",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "scan-fixtures",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/vuln_scan/fixtures/scanner.py",
+                      "__WORKSPACE_DIR__/repo/requirements.json",
+                      "__FIXTURE_URL__/vuln/advisories"
+                    ],
+                    "timeout_ms": 12000
+                  }
+                }
+              }
+            ]
+          },
+          "bindings": [],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["findings"]
+        }
+      ]
+    }
+  }
+}

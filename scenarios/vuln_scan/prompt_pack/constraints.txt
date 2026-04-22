@@ -1,0 +1,1 @@
+Use the fixture advisory service and emit machine-readable findings with severity counts.

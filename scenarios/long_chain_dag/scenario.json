@@ -1,0 +1,131 @@
+{
+  "id": "long_chain_dag",
+  "description": "Exercise a fan-out/fan-in DAG with deterministic workspace side effects.",
+  "seed": 7,
+  "allowed_chaos": ["none", "runtime_restart", "resource_pressure"],
+  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_long_chain_dag",
+  "input": {
+    "objective": "Validate long dependency chains and final aggregation order.",
+    "reference_plan": {
+      "plan_id": "long_chain_dag-reference",
+      "scenario_id": "long_chain_dag",
+      "framework": "langgraph",
+      "mode": "replay",
+      "stages": [
+        {
+          "stage_id": "fanout-fanin",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "seed-a",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "__WORKSPACE_DIR__",
+                      "seed-a"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                }
+              },
+              {
+                "id": "seed-b",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "__WORKSPACE_DIR__",
+                      "seed-b"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                }
+              },
+              {
+                "id": "branch-c",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "__WORKSPACE_DIR__",
+                      "branch-c"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                },
+                "depends_on": ["seed-a"]
+              },
+              {
+                "id": "branch-d",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "__WORKSPACE_DIR__",
+                      "branch-d"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                },
+                "depends_on": ["seed-a"]
+              },
+              {
+                "id": "branch-e",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "__WORKSPACE_DIR__",
+                      "branch-e"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                },
+                "depends_on": ["seed-b"]
+              },
+              {
+                "id": "join-final",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/long_chain_dag/fixtures/read_markers.py",
+                      "__WORKSPACE_DIR__"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                },
+                "depends_on": ["branch-c", "branch-d", "branch-e"]
+              }
+            ]
+          },
+          "bindings": [],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["dag-lineage"]
+        }
+      ]
+    }
+  }
+}

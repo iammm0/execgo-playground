@@ -1,0 +1,15 @@
+{
+  "id": "runtime_restart",
+  "target_phase": "runtime",
+  "actions": [
+    {
+      "kind": "restart_service",
+      "params": {
+        "service": "runtime"
+      }
+    }
+  ],
+  "probability": 1.0,
+  "seed": 13,
+  "recovery_expectation": "should_recover"
+}

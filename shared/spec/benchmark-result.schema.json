@@ -1,0 +1,194 @@
+{
+  "$defs": {
+    "ArtifactManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "run_dir": {
+          "title": "Run Dir",
+          "type": "string"
+        },
+        "plan_path": {
+          "title": "Plan Path",
+          "type": "string"
+        },
+        "timeline_path": {
+          "title": "Timeline Path",
+          "type": "string"
+        },
+        "snapshot_path": {
+          "title": "Snapshot Path",
+          "type": "string"
+        },
+        "adapter_trace_path": {
+          "title": "Adapter Trace Path",
+          "type": "string"
+        },
+        "result_path": {
+          "title": "Result Path",
+          "type": "string"
+        },
+        "summary_path": {
+          "title": "Summary Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_dir",
+        "plan_path",
+        "timeline_path",
+        "snapshot_path",
+        "adapter_trace_path",
+        "result_path",
+        "summary_path"
+      ],
+      "title": "ArtifactManifest",
+      "type": "object"
+    },
+    "RunMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "plan_validity": {
+          "default": 0.0,
+          "title": "Plan Validity",
+          "type": "number"
+        },
+        "submit_accept_rate": {
+          "default": 0.0,
+          "title": "Submit Accept Rate",
+          "type": "number"
+        },
+        "scenario_success": {
+          "default": 0.0,
+          "title": "Scenario Success",
+          "type": "number"
+        },
+        "recovery_success": {
+          "default": 0.0,
+          "title": "Recovery Success",
+          "type": "number"
+        },
+        "wall_time_ms": {
+          "default": 0,
+          "title": "Wall Time Ms",
+          "type": "integer"
+        },
+        "stage_count": {
+          "default": 0,
+          "title": "Stage Count",
+          "type": "integer"
+        },
+        "task_count": {
+          "default": 0,
+          "title": "Task Count",
+          "type": "integer"
+        },
+        "retry_count": {
+          "default": 0,
+          "title": "Retry Count",
+          "type": "integer"
+        },
+        "timeout_count": {
+          "default": 0,
+          "title": "Timeout Count",
+          "type": "integer"
+        },
+        "runtime_failure_count": {
+          "default": 0,
+          "title": "Runtime Failure Count",
+          "type": "integer"
+        },
+        "invalid_action_count": {
+          "default": 0,
+          "title": "Invalid Action Count",
+          "type": "integer"
+        },
+        "determinism_drift": {
+          "default": 0.0,
+          "title": "Determinism Drift",
+          "type": "number"
+        },
+        "artifact_hash_match": {
+          "default": 0.0,
+          "title": "Artifact Hash Match",
+          "type": "number"
+        }
+      },
+      "title": "RunMetrics",
+      "type": "object"
+    },
+    "VerifierResult": {
+      "additionalProperties": false,
+      "properties": {
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "details": {
+          "additionalProperties": true,
+          "title": "Details",
+          "type": "object"
+        }
+      },
+      "required": [
+        "passed"
+      ],
+      "title": "VerifierResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "framework": {
+      "title": "Framework",
+      "type": "string"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "live",
+        "replay"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "chaos_profile": {
+      "title": "Chaos Profile",
+      "type": "string"
+    },
+    "metrics": {
+      "$ref": "#/$defs/RunMetrics"
+    },
+    "verdict": {
+      "$ref": "#/$defs/VerifierResult"
+    },
+    "artifact_manifest": {
+      "$ref": "#/$defs/ArtifactManifest"
+    }
+  },
+  "required": [
+    "run_id",
+    "framework",
+    "scenario_id",
+    "mode",
+    "chaos_profile",
+    "metrics",
+    "verdict",
+    "artifact_manifest"
+  ],
+  "title": "BenchmarkResult",
+  "type": "object"
+}

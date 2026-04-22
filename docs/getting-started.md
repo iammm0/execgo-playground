@@ -1,41 +1,93 @@
 # 上手指南
 
-## 0. 启动前版本预检查（必做）
+## 1. 安装依赖
 
-每次启动项目前先执行：
+```bash
+python3 -m pip install -e ".[dev]"
+```
 
-- `pwsh ./scripts/check-execgo-version.ps1`
+## 2. 导出 schema
 
-如果输出包含 `new upstream update detected`，说明上游有更新，请先评估新能力并尝试接入，再继续本轮开发或回归。
+```bash
+python3 -m execgo_playground schema export --out shared/spec
+```
 
-## 1. 启动 ExecGo
+## 3. 启动 Docker harness
 
-先确保本地已启动 ExecGo 服务（默认 `http://localhost:8080`）。
+```bash
+python3 -m execgo_playground harness up --build
+python3 -m execgo_playground harness status
+```
 
-## 2. 运行单语言样例
+预期返回三个健康对象：
 
-- Go:
-  - `go run ./orchestrators/go/cmd/orchestrator -request ./scenarios/basic/request.json`
-- Python:
-  - `python -m orchestrators.python.src.main --request ./scenarios/basic/request.json`
-- TypeScript:
-  - `cd orchestrators/ts && npm install && npm run build && npm run start -- --request ../../scenarios/basic/request.json`
+- `execgo`
+- `runtime`
+- `fixtures`
 
-## 3. 一键回归
+## 4. 运行最小 smoke
 
-- PowerShell:
-  - `pwsh ./scripts/run-all.ps1`
+```bash
+python3 -m execgo_playground run \
+  --framework langgraph \
+  --scenario codegen_exec \
+  --mode replay \
+  --chaos none
+```
 
-`run-all.ps1` 在执行三语言回归前，会自动先执行一次版本预检查。
+成功后可在 `var/runs/` 看到一组新的 artifacts。
 
-## 4. 验收结果
+## 5. 运行多框架对比
 
-执行后会在 `out/` 下产生三语言结果文件，可用 `scripts/compare-results.ps1` 做字段级一致性校验。
+```bash
+python3 -m execgo_playground benchmark \
+  --framework langgraph \
+  --framework crewai \
+  --framework autogen \
+  --scenario codegen_exec \
+  --scenario vuln_scan \
+  --chaos none \
+  --chaos runtime_restart \
+  --mode replay
+```
 
-## 5. 对齐新版后更新锁文件
+## 6. 运行 live 模式
 
-当你确认已经完成对上游新版本（release/tag/commit）的评估与接入后，执行：
+默认测试建议使用 `mock` provider。若需要真实模型：
 
-- `pwsh ./scripts/check-execgo-version.ps1 -UpdateLock`
+```bash
+export OPENAI_API_KEY=...
+export OPENAI_BASE_URL=https://api.openai.com
 
-该命令会更新 `shared/execgo.version.lock.json`，作为项目新的对齐基线。
+python3 -m execgo_playground run \
+  --framework crewai \
+  --scenario multi_step_agent \
+  --mode live \
+  --provider openai \
+  --model gpt-4.1-mini \
+  --chaos none
+```
+
+## 7. 清理环境
+
+```bash
+python3 -m execgo_playground harness down
+```
+
+## 8. 启动桌面客户端
+
+桌面客户端位于 `desktop-client`，作为训练场内部子项目存在。
+
+```bash
+cd desktop-client
+npm install
+npm run dev
+```
+
+桌面端后端只通过子进程调用训练场：
+
+```bash
+python3 -m execgo_playground ...
+```
+
+它不会通过 HTTP 调用训练场 Python 控制面；HTTP 端口仍只属于 ExecGo / Runtime / Fixtures 运行环境。

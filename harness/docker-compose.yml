@@ -1,0 +1,32 @@
+services:
+  runtime:
+    build:
+      context: ./runtime_stub
+    ports:
+      - "18081:8080"
+    volumes:
+      - ..:/playground:ro
+      - ../var/workspace:/workspace
+
+  execgo:
+    build:
+      context: ../../execgo
+    depends_on:
+      - runtime
+    environment:
+      EXECGO_ADDR: ":8080"
+      EXECGO_GRPC_ADDR: ":50051"
+      EXECGO_DATA_DIR: "/data"
+      EXECGO_MAX_CONCURRENCY: "8"
+      EXECGO_SHUTDOWN_TIMEOUT: "15"
+      EXECGO_RUNTIME_URL: "http://runtime:8080"
+    ports:
+      - "18080:8080"
+    volumes:
+      - ../var/execgo-data:/data
+
+  fixtures:
+    build:
+      context: ./fixture_service
+    ports:
+      - "18082:8080"

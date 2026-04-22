@@ -1,0 +1,1 @@
+You are benchmarking whether an orchestration framework can produce a reproducible ExecGo plan for a dependency scanning workflow.

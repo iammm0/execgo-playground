@@ -1,0 +1,1 @@
+Each stage must remain serializable to the platform DSL. Bind data across stages instead of relying on implicit state.

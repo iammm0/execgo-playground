@@ -1,0 +1,124 @@
+{
+  "id": "multi_step_agent",
+  "description": "Collect evidence, normalize it, and render a final agent summary through staged execution.",
+  "seed": 7,
+  "allowed_chaos": ["none", "runtime_restart", "resource_pressure"],
+  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_multi_step_agent",
+  "input": {
+    "objective": "Evaluate whether the planner can preserve data fidelity across multiple runtime-backed stages.",
+    "reference_plan": {
+      "plan_id": "multi_step_agent-reference",
+      "scenario_id": "multi_step_agent",
+      "framework": "langgraph",
+      "mode": "replay",
+      "stages": [
+        {
+          "stage_id": "collect",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "collect-evidence",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/multi_step_agent/fixtures/collect_evidence.py"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          },
+          "bindings": [],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["evidence"]
+        },
+        {
+          "stage_id": "normalize",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "normalize-evidence",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/multi_step_agent/fixtures/normalize_evidence.py"
+                    ],
+                    "env": {
+                      "EVIDENCE_JSON": ""
+                    },
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          },
+          "bindings": [
+            {
+              "source_task_id": "collect-evidence",
+              "source_path": "runtime.output.output",
+              "target_task_id": "normalize-evidence",
+              "target_param_path": "input.execution.env.EVIDENCE_JSON",
+              "required": true
+            }
+          ],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["normalized-evidence"]
+        },
+        {
+          "stage_id": "render",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "render-summary",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/multi_step_agent/fixtures/render_summary.py"
+                    ],
+                    "env": {
+                      "NORMALIZED_JSON": ""
+                    },
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          },
+          "bindings": [
+            {
+              "source_task_id": "normalize-evidence",
+              "source_path": "runtime.output.output",
+              "target_task_id": "render-summary",
+              "target_param_path": "input.execution.env.NORMALIZED_JSON",
+              "required": true
+            }
+          ],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["final-summary"]
+        }
+      ]
+    }
+  }
+}

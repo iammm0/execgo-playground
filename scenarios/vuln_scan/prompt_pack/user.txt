@@ -1,0 +1,1 @@
+Read the deterministic dependency manifest, compare it with the advisory feed, and emit normalized findings.

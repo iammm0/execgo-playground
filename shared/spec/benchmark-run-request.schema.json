@@ -1,0 +1,88 @@
+{
+  "$defs": {
+    "ModelProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "default": "mock",
+          "title": "Provider",
+          "type": "string"
+        },
+        "model": {
+          "default": "mock-reliability-planner",
+          "title": "Model",
+          "type": "string"
+        },
+        "temperature": {
+          "default": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "max_tokens": {
+          "default": 1200,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "timeout_ms": {
+          "default": 60000,
+          "title": "Timeout Ms",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 7,
+          "title": "Seed",
+          "type": "integer"
+        }
+      },
+      "title": "ModelProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "frameworks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Frameworks",
+      "type": "array"
+    },
+    "scenarios": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Scenarios",
+      "type": "array"
+    },
+    "mode": {
+      "default": "replay",
+      "enum": [
+        "live",
+        "replay"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "chaos_profiles": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Chaos Profiles",
+      "type": "array"
+    },
+    "model_profile": {
+      "$ref": "#/$defs/ModelProfile"
+    },
+    "repetitions": {
+      "default": 1,
+      "title": "Repetitions",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "frameworks",
+    "scenarios"
+  ],
+  "title": "BenchmarkRunRequest",
+  "type": "object"
+}

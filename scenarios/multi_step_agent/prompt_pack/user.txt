@@ -1,0 +1,1 @@
+Collect evidence, normalize it, and render a final report that proves the chain completed successfully.

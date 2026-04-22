@@ -1,50 +1,54 @@
 # AGENT 协作说明
 
-本文件约束在本仓库工作的 AI Agent / 开发者协作行为，目标是保证三语言编排实现的一致性，并持续跟进 ExecGo 上游能力演进。
+本仓库已经从“三语言 LangGraph 训练场”重构为一个 Python-first 的 AI 编排可靠性实验平台。协作者需要优先保证平台闭环真实可运行，而不是维护历史兼容入口。
 
 ## 1. 项目目标
 
-- 保持 Go / Python / TypeScript 三套 Orchestrator 的语义一致
-- 保持输入/输出契约稳定（`shared/spec`）
-- 通过 `scenarios/*` 保障行为可回归
-- 主动跟进 ExecGo 上游能力变化
+- 围绕 `LLM 规划 -> ExecGo 调度 -> Runtime 执行 -> 结果反馈` 建立可复现实验闭环
+- 在同一套 ExecGo + Runtime + Fixtures + Chaos 环境里公平比较不同编排框架
+- 通过 `scenarios / adapters / benchmarks / chaos / observability` 五个解耦模块沉淀实验能力
+- 所有输出保持结构化，可落盘为 JSON / Markdown artifacts
 
-## 2. 启动前强制检查（必须执行）
+## 2. 默认工作流
 
-每次进入本项目并准备开始开发、调试、回归前，先执行：
+每次进入本项目并准备修改前，先执行：
 
-```powershell
-pwsh ./scripts/check-execgo-version.ps1
+```bash
+python3 -m pip install -e ".[dev]"
+python3 -m execgo_playground schema export --out shared/spec
+pytest
 ```
 
-执行规则：
+如需验证真实执行闭环，再执行：
 
-1. 如果输出 `new upstream update detected`，必须提醒使用者评估并尝试接入最新 ExecGo 特性。
-2. 在未完成评估前，不要把上游更新提示静默忽略。
-3. 当确认新版本能力已完成评估/接入后，执行：
-   - `pwsh ./scripts/check-execgo-version.ps1 -UpdateLock`
-4. 将锁文件变更（`shared/execgo.version.lock.json`）与相关文档一并提交。
+```bash
+python3 -m execgo_playground harness up --build
+python3 -m execgo_playground run --framework langgraph --scenario codegen_exec --mode replay --chaos none
+```
 
 ## 3. 代码变更约束
 
-1. 变更优先保持三语言语义对齐，避免单语言漂移。
-2. 涉及契约字段变更时，先更新 `shared/spec`，再改实现与场景。
-3. 涉及执行流程变更时，至少更新一个场景验证（`scenarios/*`）。
-4. 回归前使用：
-   - `pwsh ./scripts/run-all.ps1`
+1. 优先维护 Python 控制面，不再要求 Go / TypeScript 编排入口对齐。
+2. 变更公共契约时，必须同步更新 `src/execgo_playground/models.py` 与 `shared/spec/*.schema.json`。
+3. 变更执行链路时，至少更新一个 `scenarios/*` 和一个测试。
+4. 变更 harness / runtime / fixture 协议时，必须同步更新文档与 smoke 路径。
+5. 不要重新引入旧的 `pwsh` 脚本作为主入口；统一使用 Python CLI。
 
 ## 4. 文档维护约束
 
-1. 任一流程变化需同步更新：
-   - `README.md`
-   - `docs/getting-started.md`
-   - `docs/version-policy.md`（若涉及版本跟进策略）
-2. 文档应包含可直接执行的命令，避免仅描述不落地。
+任一流程变化需同步更新：
+
+- `README.md`
+- `docs/getting-started.md`
+- `docs/architecture.md`
+- 对应能力文档（`docs/scenarios.md` / `docs/benchmarks.md` / `docs/chaos.md` / `docs/observability.md`）
+
+文档必须带可直接执行的命令，避免抽象描述。
 
 ## 5. 推荐执行顺序
 
-1. 运行启动前检查脚本
-2. 阅读 `docs/architecture.md` 与 `docs/scenarios.md`
-3. 实现/修改对应 Orchestrator
-4. 执行 `pwsh ./scripts/run-all.ps1`
-5. 更新文档与锁文件（如涉及上游版本变更）
+1. 阅读 `README.md` 与 `docs/architecture.md`
+2. 安装依赖并导出 schema
+3. 修改 Python 平台代码与场景/chaos 配置
+4. 运行 `pytest`
+5. 如涉及真实闭环，启动 harness 并跑至少一个 replay 场景

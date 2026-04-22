@@ -1,0 +1,1 @@
+Use only the managed workspace paths. Prefer runtime command executions. Do not invent tools outside the platform DSL.

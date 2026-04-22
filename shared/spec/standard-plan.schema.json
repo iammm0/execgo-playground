@@ -1,0 +1,255 @@
+{
+  "$defs": {
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "source_task_id": {
+          "title": "Source Task Id",
+          "type": "string"
+        },
+        "source_path": {
+          "title": "Source Path",
+          "type": "string"
+        },
+        "target_task_id": {
+          "title": "Target Task Id",
+          "type": "string"
+        },
+        "target_param_path": {
+          "title": "Target Param Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source_task_id",
+        "source_path",
+        "target_task_id",
+        "target_param_path"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "ExecGoTask": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input"
+        },
+        "tool_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Name"
+        },
+        "execution_category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Execution Category"
+        },
+        "depends_on": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "retry": {
+          "default": 0,
+          "title": "Retry",
+          "type": "integer"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "ExecGoTask",
+      "type": "object"
+    },
+    "ExecGoTaskGraph": {
+      "additionalProperties": false,
+      "properties": {
+        "tasks": {
+          "items": {
+            "$ref": "#/$defs/ExecGoTask"
+          },
+          "title": "Tasks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "tasks"
+      ],
+      "title": "ExecGoTaskGraph",
+      "type": "object"
+    },
+    "PlanStage": {
+      "additionalProperties": false,
+      "properties": {
+        "stage_id": {
+          "title": "Stage Id",
+          "type": "string"
+        },
+        "task_graph": {
+          "$ref": "#/$defs/ExecGoTaskGraph"
+        },
+        "bindings": {
+          "items": {
+            "$ref": "#/$defs/Binding"
+          },
+          "title": "Bindings",
+          "type": "array"
+        },
+        "submit_policy": {
+          "$ref": "#/$defs/SubmitPolicy"
+        },
+        "expected_artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Artifacts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "stage_id",
+        "task_graph"
+      ],
+      "title": "PlanStage",
+      "type": "object"
+    },
+    "SubmitPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "poll_interval_ms": {
+          "default": 500,
+          "title": "Poll Interval Ms",
+          "type": "integer"
+        },
+        "max_attempts": {
+          "default": 120,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "stop_on_failure": {
+          "default": true,
+          "title": "Stop On Failure",
+          "type": "boolean"
+        }
+      },
+      "title": "SubmitPolicy",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "framework": {
+      "title": "Framework",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "live",
+        "replay"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "stages": {
+      "items": {
+        "$ref": "#/$defs/PlanStage"
+      },
+      "title": "Stages",
+      "type": "array"
+    },
+    "raw_trace_ref": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Trace Ref"
+    },
+    "normalization_warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Normalization Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "plan_id",
+    "scenario_id",
+    "framework",
+    "mode",
+    "stages"
+  ],
+  "title": "StandardPlan",
+  "type": "object"
+}

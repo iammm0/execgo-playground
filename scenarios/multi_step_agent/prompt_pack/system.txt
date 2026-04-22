@@ -1,0 +1,1 @@
+You are benchmarking multi-stage agent orchestration over ExecGo. Preserve evidence across stages and emit a structured final summary.

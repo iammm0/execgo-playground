@@ -1,0 +1,1 @@
+Patch the provided Python fixture, run its tests in the managed runtime, and emit a structured report containing the patched file and hash.

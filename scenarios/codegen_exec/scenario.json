@@ -1,0 +1,103 @@
+{
+  "id": "codegen_exec",
+  "description": "Patch a broken Python module, run tests, and emit a reproducible report.",
+  "seed": 7,
+  "allowed_chaos": ["none", "invalid_tool", "runtime_restart"],
+  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_codegen_exec",
+  "input": {
+    "objective": "Repair the deterministic fixture project and prove it with tests.",
+    "reference_plan": {
+      "plan_id": "codegen_exec-reference",
+      "scenario_id": "codegen_exec",
+      "framework": "langgraph",
+      "mode": "replay",
+      "stages": [
+        {
+          "stage_id": "patch-source",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "apply-fix",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/codegen_exec/fixtures/fix_bug.py",
+                      "__WORKSPACE_DIR__/template_project"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          },
+          "bindings": [],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["patch-report"]
+        },
+        {
+          "stage_id": "verify-build",
+          "task_graph": {
+            "tasks": [
+              {
+                "id": "run-tests",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "pytest",
+                    "args": [
+                      "-q",
+                      "__WORKSPACE_DIR__/template_project"
+                    ],
+                    "timeout_ms": 10000
+                  }
+                }
+              },
+              {
+                "id": "collect-report",
+                "type": "runtime",
+                "input": {
+                  "execution": {
+                    "kind": "command",
+                    "program": "python",
+                    "args": [
+                      "/playground/scenarios/codegen_exec/fixtures/collect_report.py",
+                      "__WORKSPACE_DIR__/template_project"
+                    ],
+                    "env": {
+                      "PATCHED_FILE": ""
+                    },
+                    "timeout_ms": 10000
+                  }
+                },
+                "depends_on": ["run-tests"]
+              }
+            ]
+          },
+          "bindings": [
+            {
+              "source_task_id": "apply-fix",
+              "source_path": "runtime.output.output.patched_files.0",
+              "target_task_id": "collect-report",
+              "target_param_path": "input.execution.env.PATCHED_FILE",
+              "required": true
+            }
+          ],
+          "submit_policy": {
+            "poll_interval_ms": 300,
+            "max_attempts": 60,
+            "stop_on_failure": true
+          },
+          "expected_artifacts": ["test-report", "source-hash"]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "invalid_tool",
+  "target_phase": "plan",
+  "actions": [
+    {
+      "kind": "inject_invalid_action",
+      "params": {
+        "type": "hallucinated-tool"
+      }
+    }
+  ],
+  "probability": 1.0,
+  "seed": 11,
+  "recovery_expectation": "expected_failure"
+}

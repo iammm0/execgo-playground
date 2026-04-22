@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "PromptPack": {
+      "additionalProperties": false,
+      "properties": {
+        "system_prompt": {
+          "title": "System Prompt",
+          "type": "string"
+        },
+        "user_prompt": {
+          "title": "User Prompt",
+          "type": "string"
+        },
+        "constraints_prompt": {
+          "default": "",
+          "title": "Constraints Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system_prompt",
+        "user_prompt"
+      ],
+      "title": "PromptPack",
+      "type": "object"
+    },
+    "ScenarioExpected": {
+      "additionalProperties": false,
+      "properties": {
+        "checks": {
+          "additionalProperties": true,
+          "title": "Checks",
+          "type": "object"
+        }
+      },
+      "title": "ScenarioExpected",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "input": {
+      "additionalProperties": true,
+      "title": "Input",
+      "type": "object"
+    },
+    "prompt_pack": {
+      "$ref": "#/$defs/PromptPack"
+    },
+    "expected": {
+      "$ref": "#/$defs/ScenarioExpected"
+    },
+    "verifier_ref": {
+      "title": "Verifier Ref",
+      "type": "string"
+    },
+    "allowed_chaos": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Chaos",
+      "type": "array"
+    },
+    "fixtures_dir": {
+      "title": "Fixtures Dir",
+      "type": "string"
+    },
+    "scenario_dir": {
+      "title": "Scenario Dir",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "description",
+    "seed",
+    "input",
+    "prompt_pack",
+    "expected",
+    "verifier_ref",
+    "fixtures_dir",
+    "scenario_dir"
+  ],
+  "title": "ScenarioSpec",
+  "type": "object"
+}

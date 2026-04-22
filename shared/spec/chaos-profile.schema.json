@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "ChaosAction": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ChaosAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "target_phase": {
+      "enum": [
+        "plan",
+        "submit",
+        "runtime",
+        "poll",
+        "verify"
+      ],
+      "title": "Target Phase",
+      "type": "string"
+    },
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/ChaosAction"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "probability": {
+      "default": 1.0,
+      "title": "Probability",
+      "type": "number"
+    },
+    "seed": {
+      "default": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "recovery_expectation": {
+      "default": "not_applicable",
+      "enum": [
+        "not_applicable",
+        "should_recover",
+        "expected_failure"
+      ],
+      "title": "Recovery Expectation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "target_phase"
+  ],
+  "title": "ChaosProfile",
+  "type": "object"
+}
