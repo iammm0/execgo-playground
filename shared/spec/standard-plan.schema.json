@@ -110,6 +110,13 @@
           ],
           "default": null,
           "title": "Timeout"
+        },
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Annotations",
+          "type": "object"
         }
       },
       "required": [
@@ -162,6 +169,13 @@
           },
           "title": "Expected Artifacts",
           "type": "array"
+        },
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Annotations",
+          "type": "object"
         }
       },
       "required": [
@@ -223,6 +237,11 @@
       "title": "Stages",
       "type": "array"
     },
+    "schema_version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
     "raw_trace_ref": {
       "anyOf": [
         {
@@ -241,6 +260,13 @@
       },
       "title": "Normalization Warnings",
       "type": "array"
+    },
+    "annotations": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Annotations",
+      "type": "object"
     }
   },
   "required": [

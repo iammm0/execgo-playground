@@ -8,6 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 RunMode = Literal["live", "replay"]
 
+STANDARD_PLAN_SCHEMA_VERSION = "0.1.0"
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
@@ -23,6 +25,7 @@ class ExecGoTask(StrictModel):
     depends_on: list[str] = Field(default_factory=list)
     retry: int = 0
     timeout: int | None = None
+    annotations: dict[str, str] = Field(default_factory=dict)
 
 
 class ExecGoTaskGraph(StrictModel):
@@ -65,6 +68,7 @@ class PlanStage(StrictModel):
     bindings: list[Binding] = Field(default_factory=list)
     submit_policy: SubmitPolicy = Field(default_factory=SubmitPolicy)
     expected_artifacts: list[str] = Field(default_factory=list)
+    annotations: dict[str, str] = Field(default_factory=dict)
 
 
 class PromptPack(StrictModel):
@@ -131,8 +135,10 @@ class StandardPlan(StrictModel):
     framework: str
     mode: RunMode
     stages: list[PlanStage]
+    schema_version: str = STANDARD_PLAN_SCHEMA_VERSION
     raw_trace_ref: str | None = None
     normalization_warnings: list[str] = Field(default_factory=list)
+    annotations: dict[str, str] = Field(default_factory=dict)
 
 
 class ScenarioExpected(StrictModel):
