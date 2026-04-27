@@ -13,6 +13,18 @@ class ExecGoClient:
     def __init__(self, base_url: str) -> None:
         self.base_url = base_url.rstrip("/")
 
+    def adapter_capabilities(self) -> dict[str, Any]:
+        return self._request("GET", "/adapters/capabilities")
+
+    def adapter_tools(self) -> dict[str, Any]:
+        return self._request("GET", "/adapters/tools")
+
+    def adapter_translate(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/adapters/translate", payload)
+
+    def adapter_actions(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/adapters/actions", payload)
+
     def submit_tasks(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self._request("POST", "/tasks", payload)
 
