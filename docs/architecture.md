@@ -29,6 +29,7 @@
 - 绑定上一阶段产物
 - 编译为 ExecGo `TaskGraph`
 - 提交、轮询、收集 stage 结果
+- 通过 `ExecGoClient` 访问控制面任务 API；同一 ExecGo 进程还可提供 `/adapters/*`、`/mcp/*` 与 **execgocli**（见 ExecGo 文档）；`type: runtime` 的任务由 ExecGo 经 `EXECGO_RUNTIME_URL` 提交到外部 runtime（harness 内为 stub）
 
 ### Harness Layer
 

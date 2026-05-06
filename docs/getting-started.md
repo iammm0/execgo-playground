@@ -91,3 +91,15 @@ python3 -m execgo_playground ...
 ```
 
 它不会通过 HTTP 调用训练场 Python 控制面；HTTP 端口仍只属于 ExecGo / Runtime / Fixtures 运行环境。
+
+## 9. 与上游 ExecGo 控制面的关系
+
+本仓库的 harness 会构建兄弟目录中的 ExecGo（见 `harness/docker-compose.yml`）。当前主线 / `feat-add-adapter` 等分支上，控制面除 `POST /tasks` 与 `GET /tasks/{id}` 外，还可能暴露：
+
+- **成熟 Agent 适配器**：`GET /adapters/capabilities`、`GET /adapters/tools`、`POST /adapters/translate`、`POST /adapters/actions`
+- **MCP HTTP**：`GET /mcp/tools`、`POST /mcp/call`、`GET /mcp/tasks/{id}`
+- **execgocli**：见 ExecGo 仓库 `cmd/execgocli`，子命令封装上述 HTTP 与轮询
+
+Docker 环境中 ExecGo 进程可通过 **`EXECGO_RUNTIME_URL`** 将 `type: runtime` 任务提交到本 harness 的 runtime stub；若在进程外再设置 **`EXECGO_RUNTIME_TENANT` / `EXECGO_RUNTIME_OWNER`**，runtime executor 会把它们并入提交体的 `control_context`（并在取消时携带 `X-Execgo-Owner`）。训练场默认 compose 未设置这两项，行为与未配置时一致。
+
+详细契约以 ExecGo 中文文档为准：`docs/zh/integration/agent-adapter.md`、`docs/zh/reference/execgo-cli-contract.md`、`docs/zh/overview/execgo-and-runtime.md`。

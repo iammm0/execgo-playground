@@ -37,6 +37,28 @@ class ExecGoClient:
     def health(self) -> dict[str, Any]:
         return self._request("GET", "/health")
 
+    def list_tasks(self) -> list[dict[str, Any]]:
+        data = self._request_raw("GET", "/tasks")
+        if data is None:
+            return []
+        if isinstance(data, list):
+            return [row for row in data if isinstance(row, dict)]
+        return []
+
+    def delete_task(self, task_id: str) -> None:
+        request = urllib.request.Request(f"{self.base_url}/tasks/{task_id}", method="DELETE")
+        with urllib.request.urlopen(request, timeout=30) as response:
+            _ = response.read()
+
+    def mcp_tools(self) -> dict[str, Any]:
+        return self._request("GET", "/mcp/tools")
+
+    def mcp_call(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/mcp/call", payload)
+
+    def mcp_get_task(self, task_id: str) -> dict[str, Any]:
+        return self._request("GET", f"/mcp/tasks/{task_id}")
+
     def wait_for_tasks(self, task_ids: list[str], policy: SubmitPolicy) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         snapshots: list[dict[str, Any]] = []
         terminal = {"success", "failed", "skipped"}
@@ -64,9 +86,9 @@ class ExecGoClient:
             time.sleep(policy.poll_interval_ms / 1000)
         return tasks, snapshots
 
-    def _request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    def _request_raw(self, method: str, path: str, payload: dict[str, Any] | None = None) -> Any:
         raw: bytes | None = None
-        headers = {}
+        headers: dict[str, str] = {}
         if payload is not None:
             raw = json.dumps(payload).encode("utf-8")
             headers["Content-Type"] = "application/json"
@@ -74,5 +96,14 @@ class ExecGoClient:
         with urllib.request.urlopen(request, timeout=30) as response:
             body = response.read()
         if not body:
-            return {}
+            return None
         return json.loads(body.decode("utf-8"))
+
+    def _request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        data = self._request_raw(method, path, payload)
+        if data is None:
+            return {}
+        if isinstance(data, dict):
+            return data
+        msg = f"expected JSON object from {path}, got {type(data).__name__}"
+        raise TypeError(msg)
