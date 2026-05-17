@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { BenchmarkComposer } from "./components/BenchmarkComposer";
 import { CommandPanel } from "./components/CommandPanel";
+import { HomePage } from "./components/HomePage";
+import { Nav } from "./components/Nav";
 import { ResultsBoard } from "./components/ResultsBoard";
 import { loadWorkspaceSnapshot, runBenchmark, runPlaygroundCommand } from "./lib/tauri";
 import type { BenchmarkInput, CommandRun, WorkspaceSnapshot } from "./types";
 import "./styles.css";
+
+export type Page = "home" | "benchmark" | "commands" | "results";
 
 const defaultBenchmark: BenchmarkInput = {
   frameworks: ["langgraph"],
@@ -21,6 +25,7 @@ const defaultBenchmark: BenchmarkInput = {
 };
 
 function App() {
+  const [page, setPage] = useState<Page>("home");
   const [snapshot, setSnapshot] = useState<WorkspaceSnapshot | null>(null);
   const [benchmark, setBenchmark] = useState<BenchmarkInput>(defaultBenchmark);
   const [manualCommand, setManualCommand] = useState("run --framework langgraph --scenario codegen_exec --mode replay --chaos none");
@@ -36,23 +41,19 @@ function App() {
         setSelectedRunId(next.runs[0]?.run_id ?? null);
         setBenchmark((current) => ({
           ...current,
-          frameworks: current.frameworks.filter((framework) => next.frameworks.includes(framework)).length
-            ? current.frameworks.filter((framework) => next.frameworks.includes(framework))
+          frameworks: current.frameworks.filter((f) => next.frameworks.includes(f)).length
+            ? current.frameworks.filter((f) => next.frameworks.includes(f))
             : [next.frameworks[0]].filter(Boolean),
-          scenarios: current.scenarios.filter((scenario) => next.scenarios.includes(scenario)).length
-            ? current.scenarios.filter((scenario) => next.scenarios.includes(scenario))
+          scenarios: current.scenarios.filter((s) => next.scenarios.includes(s)).length
+            ? current.scenarios.filter((s) => next.scenarios.includes(s))
             : [next.scenarios[0]].filter(Boolean),
-          chaos_profiles: current.chaos_profiles.filter((profile) => next.chaos_profiles.includes(profile)).length
-            ? current.chaos_profiles.filter((profile) => next.chaos_profiles.includes(profile))
-            : ["none"].filter((profile) => next.chaos_profiles.includes(profile)),
+          chaos_profiles: current.chaos_profiles.filter((p) => next.chaos_profiles.includes(p)).length
+            ? current.chaos_profiles.filter((p) => next.chaos_profiles.includes(p))
+            : ["none"].filter((p) => next.chaos_profiles.includes(p)),
         }));
       })
       .catch((err) => setError(String(err)));
   }, []);
-
-  const passRate = snapshot?.runs.length
-    ? Math.round((snapshot.runs.filter((run) => run.verdict_passed).length / snapshot.runs.length) * 100)
-    : 0;
 
   async function runCommand(args: string[]) {
     setBusy(true);
@@ -97,20 +98,7 @@ function App() {
 
   return (
     <main className="app-shell">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">训练场桌面端</p>
-          <h1>AI 编排可靠性训练场控制台</h1>
-          <p className="hero-copy">
-            通过本地子进程调用训练场 CLI，配置测评矩阵，并查看每组运行结果的结构化证据链。
-          </p>
-        </div>
-        <div className="hero-stats">
-          <span>{snapshot?.frameworks.length ?? 0} 个编排框架</span>
-          <span>{snapshot?.scenarios.length ?? 0} 个测试场景</span>
-          <span>通过率 {passRate}%</span>
-        </div>
-      </header>
+      <Nav current={page} onNavigate={setPage} />
 
       {error && (
         <div className="error-banner">
@@ -119,26 +107,18 @@ function App() {
         </div>
       )}
 
-      <section className="workspace-strip">
-        <div>
-          <span>训练场目录</span>
-          <code>{snapshot?.playground_root ?? "加载中..."}</code>
-        </div>
-        <div>
-          <span>Python 解释器</span>
-          <code>{snapshot?.python_bin ?? "python3"}</code>
-        </div>
-        <button className="ghost-button" disabled={busy} onClick={refresh}>刷新结果</button>
-      </section>
-
-      <section className="top-grid">
-        <CommandPanel
-          value={manualCommand}
+      {page === "home" && (
+        <HomePage
+          snapshot={snapshot}
           busy={busy}
-          lastRun={lastRun}
-          onChange={setManualCommand}
-          onRun={runCommand}
+          onRunCommand={runCommand}
+          onRunBenchmark={executeBenchmark}
+          onRefresh={refresh}
+          onNavigate={setPage}
         />
+      )}
+
+      {page === "benchmark" && (
         <BenchmarkComposer
           snapshot={snapshot}
           value={benchmark}
@@ -146,13 +126,25 @@ function App() {
           onChange={setBenchmark}
           onRun={executeBenchmark}
         />
-      </section>
+      )}
 
-      <ResultsBoard
-        runs={snapshot?.runs ?? []}
-        selectedRunId={selectedRunId}
-        onSelect={setSelectedRunId}
-      />
+      {page === "commands" && (
+        <CommandPanel
+          value={manualCommand}
+          busy={busy}
+          lastRun={lastRun}
+          onChange={setManualCommand}
+          onRun={runCommand}
+        />
+      )}
+
+      {page === "results" && (
+        <ResultsBoard
+          runs={snapshot?.runs ?? []}
+          selectedRunId={selectedRunId}
+          onSelect={setSelectedRunId}
+        />
+      )}
     </main>
   );
 }
