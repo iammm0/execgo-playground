@@ -10,6 +10,12 @@ import "./styles.css";
 
 export type Page = "home" | "benchmark" | "commands" | "results";
 
+type SuccessNotice = {
+  id: number;
+  runId: string | null;
+  runCount: number;
+};
+
 const defaultBenchmark: BenchmarkInput = {
   frameworks: ["langgraph"],
   scenarios: ["codegen_exec"],
@@ -33,6 +39,7 @@ function App() {
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successNotice, setSuccessNotice] = useState<SuccessNotice | null>(null);
 
   useEffect(() => {
     loadWorkspaceSnapshot()
@@ -55,6 +62,15 @@ function App() {
       .catch((err) => setError(String(err)));
   }, []);
 
+  useEffect(() => {
+    if (!successNotice) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setSuccessNotice(null), 8000);
+    return () => window.clearTimeout(timeout);
+  }, [successNotice]);
+
   async function runCommand(args: string[]) {
     setBusy(true);
     setError(null);
@@ -73,11 +89,18 @@ function App() {
   async function executeBenchmark() {
     setBusy(true);
     setError(null);
+    setSuccessNotice(null);
     try {
       const result = await runBenchmark(benchmark);
       setLastRun(result);
       setSnapshot(result.snapshot);
-      setSelectedRunId(result.snapshot.runs[0]?.run_id ?? null);
+      const latestRunId = result.snapshot.runs[0]?.run_id ?? null;
+      setSelectedRunId(latestRunId);
+      setSuccessNotice({
+        id: Date.now(),
+        runId: latestRunId,
+        runCount: result.snapshot.runs.length,
+      });
     } catch (err) {
       setError(String(err));
     } finally {
@@ -104,6 +127,29 @@ function App() {
         <div className="error-banner">
           <strong>操作失败</strong>
           <span>{error}</span>
+        </div>
+      )}
+
+      {successNotice && (
+        <div key={successNotice.id} className="success-notice" role="status" aria-live="polite">
+          <span className="success-notice-mark" aria-hidden="true" />
+          <span className="success-notice-copy">
+            <strong>测评已完成</strong>
+            <span>已生成最新测评结果，请前往测评结果查看。</span>
+          </span>
+          <span className="success-notice-count">{successNotice.runCount} 组结果</span>
+          <button
+            className="success-notice-action"
+            onClick={() => {
+              if (successNotice.runId) {
+                setSelectedRunId(successNotice.runId);
+              }
+              setPage("results");
+              setSuccessNotice(null);
+            }}
+          >
+            查看结果
+          </button>
         </div>
       )}
 
