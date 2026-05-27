@@ -1,9 +1,9 @@
 {
   "id": "codegen_exec",
-  "description": "Patch a broken Python module, run tests, and emit a reproducible report.",
+  "description": "Patch a broken TypeScript module, run tests, and emit a reproducible report.",
   "seed": 7,
   "allowed_chaos": ["none", "invalid_tool", "runtime_restart"],
-  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_codegen_exec",
+  "verifier_ref": "verify_codegen_exec",
   "input": {
     "objective": "Repair the deterministic fixture project and prove it with tests.",
     "reference_plan": {
@@ -22,9 +22,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/codegen_exec/fixtures/fix_bug.py",
+                      "/playground/scenarios/codegen_exec/fixtures/fix_bug.ts",
                       "__WORKSPACE_DIR__/template_project"
                     ],
                     "timeout_ms": 10000
@@ -51,10 +51,10 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "pytest",
+                    "program": "tsx",
                     "args": [
-                      "-q",
-                      "__WORKSPACE_DIR__/template_project"
+                      "--test",
+                      "__WORKSPACE_DIR__/template_project/math_ops.test.ts"
                     ],
                     "timeout_ms": 10000
                   }
@@ -66,9 +66,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/codegen_exec/fixtures/collect_report.py",
+                      "/playground/scenarios/codegen_exec/fixtures/collect_report.ts",
                       "__WORKSPACE_DIR__/template_project"
                     ],
                     "env": {

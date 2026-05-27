@@ -1,7 +1,9 @@
-FROM python:3.12-slim
+FROM node:22-slim
 
 WORKDIR /app
-COPY app.py /app/app.py
+COPY app.ts /app/app.ts
+
+RUN npm install --global tsx
 
 EXPOSE 8080
-CMD ["python", "/app/app.py"]
+CMD ["tsx", "/app/app.ts"]

@@ -3,7 +3,7 @@
   "description": "Exercise a fan-out/fan-in DAG with deterministic workspace side effects.",
   "seed": 7,
   "allowed_chaos": ["none", "runtime_restart", "resource_pressure"],
-  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_long_chain_dag",
+  "verifier_ref": "verify_long_chain_dag",
   "input": {
     "objective": "Validate long dependency chains and final aggregation order.",
     "reference_plan": {
@@ -22,9 +22,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.ts",
                       "__WORKSPACE_DIR__",
                       "seed-a"
                     ],
@@ -38,9 +38,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.ts",
                       "__WORKSPACE_DIR__",
                       "seed-b"
                     ],
@@ -54,9 +54,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.ts",
                       "__WORKSPACE_DIR__",
                       "branch-c"
                     ],
@@ -71,9 +71,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.ts",
                       "__WORKSPACE_DIR__",
                       "branch-d"
                     ],
@@ -88,9 +88,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/write_marker.ts",
                       "__WORKSPACE_DIR__",
                       "branch-e"
                     ],
@@ -105,9 +105,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/long_chain_dag/fixtures/read_markers.py",
+                      "/playground/scenarios/long_chain_dag/fixtures/read_markers.ts",
                       "__WORKSPACE_DIR__"
                     ],
                     "timeout_ms": 10000

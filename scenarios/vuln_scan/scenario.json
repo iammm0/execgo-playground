@@ -3,7 +3,7 @@
   "description": "Scan a deterministic dependency manifest against advisory fixtures and summarize findings.",
   "seed": 7,
   "allowed_chaos": ["none", "fixture_latency", "runtime_restart"],
-  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_vuln_scan",
+  "verifier_ref": "verify_vuln_scan",
   "input": {
     "objective": "Produce normalized vulnerability findings from the fixture repo.",
     "reference_plan": {
@@ -22,9 +22,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/vuln_scan/fixtures/scanner.py",
+                      "/playground/scenarios/vuln_scan/fixtures/scanner.ts",
                       "__WORKSPACE_DIR__/repo/requirements.json",
                       "__FIXTURE_URL__/vuln/advisories"
                     ],

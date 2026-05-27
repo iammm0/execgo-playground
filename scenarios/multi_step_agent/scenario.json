@@ -3,7 +3,7 @@
   "description": "Collect evidence, normalize it, and render a final agent summary through staged execution.",
   "seed": 7,
   "allowed_chaos": ["none", "runtime_restart", "resource_pressure"],
-  "verifier_ref": "execgo_playground.scenarios.verifiers:verify_multi_step_agent",
+  "verifier_ref": "verify_multi_step_agent",
   "input": {
     "objective": "Evaluate whether the planner can preserve data fidelity across multiple runtime-backed stages.",
     "reference_plan": {
@@ -22,9 +22,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/multi_step_agent/fixtures/collect_evidence.py"
+                      "/playground/scenarios/multi_step_agent/fixtures/collect_evidence.ts"
                     ],
                     "timeout_ms": 10000
                   }
@@ -50,9 +50,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/multi_step_agent/fixtures/normalize_evidence.py"
+                      "/playground/scenarios/multi_step_agent/fixtures/normalize_evidence.ts"
                     ],
                     "env": {
                       "EVIDENCE_JSON": ""
@@ -89,9 +89,9 @@
                 "input": {
                   "execution": {
                     "kind": "command",
-                    "program": "python",
+                    "program": "tsx",
                     "args": [
-                      "/playground/scenarios/multi_step_agent/fixtures/render_summary.py"
+                      "/playground/scenarios/multi_step_agent/fixtures/render_summary.ts"
                     ],
                     "env": {
                       "NORMALIZED_JSON": ""
