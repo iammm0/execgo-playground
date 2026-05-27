@@ -8,7 +8,7 @@
 - DSL 是否能在真实 ExecGo + Runtime 中成功执行
 - 失败是否可归因、可恢复、可重放
 
-因此平台采用单一 Python 控制面，围绕真实执行闭环而不是语言样例来建模。
+因此平台采用单一 TypeScript 控制面，围绕真实执行闭环而不是语言样例来建模。
 
 ## 2. 分层
 
@@ -51,9 +51,9 @@
 ### Desktop Client Layer
 
 - Tauri 2 子项目位于 `desktop-client`
-- Rust 后端通过本地子进程执行 `python3 -m execgo_playground ...`
+- Rust 后端通过本地子进程执行 `npm run cli -- ...`
 - 前端只负责命令触发、测评配置、运行结果读取与可视化
-- 桌面端不直接通过网络调用训练场 Python 控制面
+- 桌面端不直接通过网络调用训练场 TypeScript 控制面
 
 ## 3. StandardPlan DSL
 
@@ -111,7 +111,7 @@ flowchart LR
 - `fixtures`
   - 提供 advisory feed 与 chaos 控制面
 
-控制面统一运行在宿主机 Python 进程中。
+控制面统一运行在宿主机 Node.js 进程中。
 
 ## 6. 故障注入原则
 

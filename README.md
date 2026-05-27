@@ -1,10 +1,10 @@
 # ExecGo Playground
 
-`execgo-playground` 是一个 Python-first 的 AI 编排可靠性实验平台，用来回答一个核心问题：
+`execgo-playground` 是一个 TypeScript-first 的 AI 编排可靠性实验平台，用来回答一个核心问题：
 
 **LLM 生成的计划，在真实执行系统中是否可靠、可控、可恢复。**
 
-它不再是 Go / Python / TypeScript 的 demo 集合，而是围绕以下完整闭环设计：
+它不再是多语言 demo 集合，而是围绕以下完整闭环设计：
 
 1. LLM 或 replay 产出规划结果
 2. adapter 将框架输出归一化为 `StandardPlan`
@@ -41,7 +41,7 @@
 - `desktop-client`
   - Tauri 2 桌面客户端，通过本地子进程调用训练场 CLI
 - `shared/spec`
-  - 由 Pydantic 导出的 JSON Schema
+  - 由 TypeScript 控制面维护的 JSON Schema
 - `tests`
   - 单元测试与可选 Docker 集成测试
 
@@ -50,20 +50,20 @@
 ### 1. 安装依赖
 
 ```bash
-python3 -m pip install -e ".[dev]"
+npm install
 ```
 
 ### 2. 导出 schema
 
 ```bash
-python3 -m execgo_playground schema export --out shared/spec
+npm run cli -- schema export --out shared/spec
 ```
 
 ### 3. 启动实验环境
 
 ```bash
-python3 -m execgo_playground harness up --build
-python3 -m execgo_playground harness status
+npm run cli -- harness up --build
+npm run cli -- harness status
 ```
 
 默认端口：
@@ -75,7 +75,7 @@ python3 -m execgo_playground harness status
 ### 4. 运行单个实验
 
 ```bash
-python3 -m execgo_playground run \
+npm run cli -- run \
   --framework langgraph \
   --scenario codegen_exec \
   --mode replay \
@@ -85,7 +85,7 @@ python3 -m execgo_playground run \
 ### 5. 运行 benchmark
 
 ```bash
-python3 -m execgo_playground benchmark \
+npm run cli -- benchmark \
   --framework langgraph \
   --framework crewai \
   --framework autogen \
@@ -111,7 +111,7 @@ OpenAI-compatible live 运行示例：
 export OPENAI_API_KEY=...
 export OPENAI_BASE_URL=https://api.openai.com
 
-python3 -m execgo_playground run \
+npm run cli -- run \
   --framework autogen \
   --scenario vuln_scan \
   --mode live \
@@ -146,25 +146,25 @@ npm run dev
 桌面端不会通过网络连接训练场控制面。Rust 后端只会在 `execgo-playground` 根目录下启动本地子进程：
 
 ```bash
-python3 -m execgo_playground ...
+npm run cli -- ...
 ```
 
-如需指定 Python 解释器：
+如需指定 npm：
 
 ```bash
-export EXECGO_PLAYGROUND_PYTHON=/path/to/python3
+export EXECGO_PLAYGROUND_NPM=/path/to/npm
 ```
 
 ## 测试
 
 ```bash
-pytest
+npm test
 ```
 
 如需执行 Docker 集成测试：
 
 ```bash
-EXECGO_PLAYGROUND_RUN_DOCKER_TESTS=1 pytest tests/integration
+EXECGO_PLAYGROUND_RUN_DOCKER_TESTS=1 npm test
 ```
 
 ## 参考

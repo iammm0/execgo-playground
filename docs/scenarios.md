@@ -5,7 +5,7 @@
 ## `codegen_exec`
 
 - 目标
-  - 修复一个确定性 Python fixture，并通过测试验证
+  - 修复一个确定性 TypeScript fixture，并通过测试验证
 - 关键能力
   - 多阶段执行
   - binding 跨阶段传递补丁元数据
@@ -49,7 +49,7 @@
 - `expected.json`
   - verifier 阈值
 - `verifier`
-  - Python 函数，返回 `VerifierResult`
+  - TypeScript 函数，返回 `VerifierResult`
 
 ## 设计原则
 

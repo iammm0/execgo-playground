@@ -13,7 +13,7 @@
 1. Any serialized plan must include `schema_version`.
 2. Experimental or workflow-specific metadata should go into `annotations` before becoming a first-class field.
 3. Until the workflow-level contract is stabilized, controlled task vocabularies and binding path syntax remain intentionally unspecified.
-4. Changes to `src/execgo_playground/models.py` that affect `StandardPlan` must be followed by `python3 -m execgo_playground schema export --out shared/spec`.
+4. Changes to `src/execgo_playground/models.ts` that affect `StandardPlan` must be followed by `npm run cli -- schema export --out shared/spec`.
 5. When controlled vocabularies and binding path syntax are formalized, update this document and remove the temporary deferral note from the workspace `CLAUDE.md`.
 
 ## Compatibility intent

@@ -47,7 +47,7 @@
 ## 示例
 
 ```bash
-python3 -m execgo_playground benchmark \
+npm run cli -- benchmark \
   --framework langgraph \
   --framework crewai \
   --framework autogen \

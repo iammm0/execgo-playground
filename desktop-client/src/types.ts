@@ -1,7 +1,7 @@
 export type WorkspaceSnapshot = {
   desktop_root: string;
   playground_root: string;
-  python_bin: string;
+  node_bin: string;
   frameworks: string[];
   scenarios: string[];
   chaos_profiles: string[];

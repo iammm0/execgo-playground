@@ -38,7 +38,7 @@ export function CommandPanel({ value, busy, lastRun, onChange, onRun }: Props) {
       </div>
 
       <label className="field-label" htmlFor="manual-command">
-        python3 -m execgo_playground
+        npm run cli --
       </label>
       <textarea
         id="manual-command"

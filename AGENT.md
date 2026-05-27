@@ -1,6 +1,6 @@
 # AGENT 协作说明
 
-本仓库已经从“三语言 LangGraph 训练场”重构为一个 Python-first 的 AI 编排可靠性实验平台。协作者需要优先保证平台闭环真实可运行，而不是维护历史兼容入口。
+本仓库已经从“三语言 LangGraph 训练场”重构为一个 TypeScript-first 的 AI 编排可靠性实验平台。协作者需要优先保证平台闭环真实可运行，而不是维护历史兼容入口。
 
 ## 1. 项目目标
 
@@ -14,25 +14,25 @@
 每次进入本项目并准备修改前，先执行：
 
 ```bash
-python3 -m pip install -e ".[dev]"
-python3 -m execgo_playground schema export --out shared/spec
-pytest
+npm install
+npm run cli -- schema export --out shared/spec
+npm test
 ```
 
 如需验证真实执行闭环，再执行：
 
 ```bash
-python3 -m execgo_playground harness up --build
-python3 -m execgo_playground run --framework langgraph --scenario codegen_exec --mode replay --chaos none
+npm run cli -- harness up --build
+npm run cli -- run --framework langgraph --scenario codegen_exec --mode replay --chaos none
 ```
 
 ## 3. 代码变更约束
 
-1. 优先维护 Python 控制面，不再要求 Go / TypeScript 编排入口对齐。
-2. 变更公共契约时，必须同步更新 `src/execgo_playground/models.py` 与 `shared/spec/*.schema.json`。
+1. 优先维护 TypeScript 控制面，不再要求 Go / TypeScript 编排入口对齐。
+2. 变更公共契约时，必须同步更新 `src/execgo_playground/models.ts` 与 `shared/spec/*.schema.json`。
 3. 变更执行链路时，至少更新一个 `scenarios/*` 和一个测试。
 4. 变更 harness / runtime / fixture 协议时，必须同步更新文档与 smoke 路径。
-5. 不要重新引入旧的 `pwsh` 脚本作为主入口；统一使用 Python CLI。
+5. 不要重新引入旧的 `pwsh` 脚本作为主入口；统一使用 TypeScript CLI。
 
 ## 4. 文档维护约束
 
@@ -49,6 +49,6 @@ python3 -m execgo_playground run --framework langgraph --scenario codegen_exec -
 
 1. 阅读 `README.md` 与 `docs/architecture.md`
 2. 安装依赖并导出 schema
-3. 修改 Python 平台代码与场景/chaos 配置
-4. 运行 `pytest`
+3. 修改 TypeScript 平台代码与场景/chaos 配置
+4. 运行 `npm test`
 5. 如涉及真实闭环，启动 harness 并跑至少一个 replay 场景

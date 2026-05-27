@@ -7,24 +7,24 @@
 桌面端不通过网络连接训练场控制面。所有操作都由 Rust 后端启动本地子进程：
 
 ```bash
-python3 -m execgo_playground ...
+npm run cli -- ...
 ```
 
 默认从 `desktop-client` 的父目录定位 `execgo-playground` 根目录，并在该目录下执行命令。
 
-如需指定 Python，可设置：
+如需指定 npm，可设置：
 
 ```bash
-export EXECGO_PLAYGROUND_PYTHON=/path/to/python3
+export EXECGO_PLAYGROUND_NPM=/path/to/npm
 ```
 
 ## 开发
 
-先在训练场根目录安装 Python 依赖：
+先在训练场根目录安装 Node 依赖：
 
 ```bash
 cd ..
-python3 -m pip install -e ".[dev]"
+npm install
 ```
 
 再进入桌面端：

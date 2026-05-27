@@ -3,20 +3,20 @@
 ## 1. 安装依赖
 
 ```bash
-python3 -m pip install -e ".[dev]"
+npm install
 ```
 
 ## 2. 导出 schema
 
 ```bash
-python3 -m execgo_playground schema export --out shared/spec
+npm run cli -- schema export --out shared/spec
 ```
 
 ## 3. 启动 Docker harness
 
 ```bash
-python3 -m execgo_playground harness up --build
-python3 -m execgo_playground harness status
+npm run cli -- harness up --build
+npm run cli -- harness status
 ```
 
 预期返回三个健康对象：
@@ -28,7 +28,7 @@ python3 -m execgo_playground harness status
 ## 4. 运行最小 smoke
 
 ```bash
-python3 -m execgo_playground run \
+npm run cli -- run \
   --framework langgraph \
   --scenario codegen_exec \
   --mode replay \
@@ -40,7 +40,7 @@ python3 -m execgo_playground run \
 ## 5. 运行多框架对比
 
 ```bash
-python3 -m execgo_playground benchmark \
+npm run cli -- benchmark \
   --framework langgraph \
   --framework crewai \
   --framework autogen \
@@ -59,7 +59,7 @@ python3 -m execgo_playground benchmark \
 export OPENAI_API_KEY=...
 export OPENAI_BASE_URL=https://api.openai.com
 
-python3 -m execgo_playground run \
+npm run cli -- run \
   --framework crewai \
   --scenario multi_step_agent \
   --mode live \
@@ -71,7 +71,7 @@ python3 -m execgo_playground run \
 ## 7. 清理环境
 
 ```bash
-python3 -m execgo_playground harness down
+npm run cli -- harness down
 ```
 
 ## 8. 启动桌面客户端
@@ -87,10 +87,10 @@ npm run dev
 桌面端后端只通过子进程调用训练场：
 
 ```bash
-python3 -m execgo_playground ...
+npm run cli -- ...
 ```
 
-它不会通过 HTTP 调用训练场 Python 控制面；HTTP 端口仍只属于 ExecGo / Runtime / Fixtures 运行环境。
+它不会通过 HTTP 调用训练场 TypeScript 控制面；HTTP 端口仍只属于 ExecGo / Runtime / Fixtures 运行环境。
 
 ## 9. 与上游 ExecGo 控制面的关系
 

@@ -11,7 +11,7 @@ use std::{
 pub struct WorkspaceSnapshot {
     pub desktop_root: String,
     pub playground_root: String,
-    pub python_bin: String,
+    pub node_bin: String,
     pub frameworks: Vec<String>,
     pub scenarios: Vec<String>,
     pub chaos_profiles: Vec<String>,
@@ -72,7 +72,7 @@ pub fn load_workspace_snapshot() -> Result<WorkspaceSnapshot, String> {
 #[tauri::command]
 pub fn run_playground_command(args: Vec<String>) -> Result<CommandRun, String> {
     if args.is_empty() {
-        return Err("请输入要传给 execgo_playground CLI 的参数".into());
+        return Err("请输入要传给 execgo-playground CLI 的参数".into());
     }
     run_cli(args)
 }
@@ -126,16 +126,18 @@ pub fn run_benchmark(input: BenchmarkInput) -> Result<CommandRun, String> {
 fn run_cli(args: Vec<String>) -> Result<CommandRun, String> {
     let desktop_root = desktop_root()?;
     let playground_root = playground_root_from_desktop(&desktop_root)?;
-    let python_bin = resolve_python_bin();
-    let output = Command::new(&python_bin)
-        .arg("-m")
-        .arg("execgo_playground")
+    let node_bin = resolve_node_bin();
+    let output = Command::new(&node_bin)
+        .arg("run")
+        .arg("--silent")
+        .arg("cli")
+        .arg("--")
         .args(&args)
         .current_dir(&playground_root)
         .output()
         .map_err(|err| format!("启动子进程失败: {err}"))?;
 
-    let mut command = vec![python_bin.clone(), "-m".into(), "execgo_playground".into()];
+    let mut command = vec![node_bin.clone(), "run".into(), "--silent".into(), "cli".into(), "--".into()];
     command.extend(args);
     Ok(CommandRun {
         command,
@@ -153,7 +155,7 @@ fn workspace_snapshot() -> Result<WorkspaceSnapshot, String> {
     Ok(WorkspaceSnapshot {
         desktop_root: desktop_root.to_string_lossy().to_string(),
         playground_root: playground_root.to_string_lossy().to_string(),
-        python_bin: resolve_python_bin(),
+        node_bin: resolve_node_bin(),
         frameworks: vec!["langgraph".into(), "crewai".into(), "autogen".into()],
         scenarios: list_dirs_with_file(&playground_root.join("scenarios"), "scenario.json")?,
         chaos_profiles: list_json_stems(&playground_root.join("chaos").join("profiles"))?,
@@ -190,18 +192,18 @@ fn playground_root_from_desktop(desktop_root: &Path) -> Result<PathBuf, String> 
         .ok_or_else(|| "无法定位 execgo-playground 根目录".into())
 }
 
-fn resolve_python_bin() -> String {
-    if let Ok(candidate) = env::var("EXECGO_PLAYGROUND_PYTHON") {
+fn resolve_node_bin() -> String {
+    if let Ok(candidate) = env::var("EXECGO_PLAYGROUND_NPM") {
         if !candidate.trim().is_empty() {
             return candidate;
         }
     }
-    for candidate in ["python3", "python"] {
+    for candidate in ["npm"] {
         if Command::new(candidate).arg("--version").output().is_ok() {
             return candidate.to_string();
         }
     }
-    "python3".into()
+    "npm".into()
 }
 
 fn list_dirs_with_file(root: &Path, file_name: &str) -> Result<Vec<String>, String> {

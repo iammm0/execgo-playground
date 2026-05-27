@@ -91,8 +91,8 @@ export function HomePage({ snapshot, busy, onRunCommand, onRunBenchmark, onRefre
             <code>{snapshot?.playground_root ?? "加载中..."}</code>
           </div>
           <div>
-            <span>Python</span>
-            <code>{snapshot?.python_bin ?? "python3"}</code>
+            <span>Node CLI</span>
+            <code>{snapshot?.node_bin ?? "npm"}</code>
           </div>
         </div>
       </section>
