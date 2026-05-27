@@ -48,22 +48,22 @@
       "additionalProperties": false,
       "properties": {
         "plan_validity": {
-          "default": 0.0,
+          "default": 0,
           "title": "Plan Validity",
           "type": "number"
         },
         "submit_accept_rate": {
-          "default": 0.0,
+          "default": 0,
           "title": "Submit Accept Rate",
           "type": "number"
         },
         "scenario_success": {
-          "default": 0.0,
+          "default": 0,
           "title": "Scenario Success",
           "type": "number"
         },
         "recovery_success": {
-          "default": 0.0,
+          "default": 0,
           "title": "Recovery Success",
           "type": "number"
         },
@@ -103,12 +103,12 @@
           "type": "integer"
         },
         "determinism_drift": {
-          "default": 0.0,
+          "default": 0,
           "title": "Determinism Drift",
           "type": "number"
         },
         "artifact_hash_match": {
-          "default": 0.0,
+          "default": 0,
           "title": "Artifact Hash Match",
           "type": "number"
         }

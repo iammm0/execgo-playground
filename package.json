@@ -1,0 +1,17 @@
+{
+  "name": "execgo-playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "cli": "tsx src/execgo_playground/cli.ts",
+    "schema": "tsx src/execgo_playground/cli.ts schema export --out shared/spec",
+    "test": "node --import tsx --test tests/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
